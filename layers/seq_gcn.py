@@ -38,12 +38,10 @@ class SequentialGraphCNN(Layer):
         self.bias_constraint = constraints.get(bias_constraint)
 
     def build(self, input_shape):
-
         if self.num_filters != int(self.graph_conv_filters.shape[0] / self.graph_conv_filters.shape[1]):
             raise ValueError('num_filters does not match with graph_conv_filters dimensions.')
 
         self.input_dim = input_shape[-1]
-        self.batch_size = input_shape[0]
         kernel_shape = (self.num_filters * self.input_dim, self.output_dim)
     
         self.kernel = []
@@ -70,13 +68,12 @@ class SequentialGraphCNN(Layer):
         output = []
         if len(inputs.shape) != 4:
                 raise ValueError('x must be 4 dimension tensor'
-                                 'Got input shape: ' + str(inputs.get_shape()))
+                                 'Got input shape: ' + str(x.get_shape()))
         for step in range(self.seq_len):
-            graph_conv_filters = tf.expand_dims(self.graph_conv_filters, 0)
             batch_size = tf.shape(inputs)[0]
-            graph_conv_filters = tf.tile(graph_conv_filters, [batch_size, 1, 1])
-            tmp = K.batch_dot(graph_conv_filters, inputs[:, step, :, :])
-            tmp = tf.split(tmp, self.num_filters, 1)
+            tmp = tf.tensordot(self.graph_conv_filters, inputs[:, step, :, :], axes=[1,1])
+            tmp = tf.transpose(tmp, [1,0,2])
+            tmp = tf.split(tmp, self.num_filters, axis=1)
             tmp = K.concatenate(tmp, axis=2)
             tmp = K.dot(tmp, self.kernel[step])
 
