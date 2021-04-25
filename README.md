@@ -12,5 +12,8 @@ layers配下にグラフのシーケンスデータに対する畳み込み演�
 
 従って，レイヤーへの入力は [batch_size, num_graph_nodes, input_dim] から [batch_size, sequence_length, num_graph_nodes, graph_conv_filters] の四次元テンソルに変更されています．
 
+## モデル概要図
+![architecture_poi](https://user-images.githubusercontent.com/56177314/115978686-31a0f980-a5bc-11eb-9d73-0f0bb6449a13.png)
+
 ## データ
 データは株式会社ドコモ・インサイトマーケティングよりご提供頂いた「モバイル空間統計」を使用しています．
