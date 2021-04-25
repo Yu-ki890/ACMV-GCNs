@@ -1,5 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras.callbacks import ModelCheckpoint
+from models import *
 from utils import *
 import numpy as np
 
@@ -7,7 +8,7 @@ batch_size=32
 num_epochs=200
 
 def main():
-  model = load_model()
+  model = create_model()
 
   #load data
   train_x, train_y, context_train, seq_context_train, tf_idf_train = prepare_train_data()
