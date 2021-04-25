@@ -1,9 +1,10 @@
 import tensorflow as tf
 from tensorflow.keras.callbacks import ModelCheckpoint
-from params import Params as param
 from utils import *
 import numpy as np
-import h5py
+
+batch_size=32
+num_epochs=200
 
 def main():
   model = load_model()
@@ -25,8 +26,8 @@ def main():
   #train a model
   history = model.fit([train_x, context_train, seq_context_train, tf_idf_train], train_y, 
                       validation_data=([test_x, context_test, seq_context_test, tf_idf_test], test_y), 
-                      batch_size=param.batch_size,  
-                      epochs=param.epochs, 
+                      batch_size=batch_size,  
+                      epochs=num_epochs, 
                       callbacks=[model_checkpoint]
                       )
 
