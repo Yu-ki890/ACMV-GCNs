@@ -2,14 +2,34 @@ import numpy as np
 import pandas as pd
 import scipy.sparse as sp
 
-def create_top_k_adj(k, path):
-    dis_matrix = pd.read_csv(path)
-    n_nodes = len(dis_matrix)
-    adj = np.zeros((n_nodes, n_nodes))
-    for i in range(n_nodes):
-        idx = dis_matrix.iloc[i, :].sort_values().index[1:k+1].astype('int')
-        pd.DataFrame(adj).iloc[i, idx] = 1
-    return adj
+def prepare_train_data():
+    """TODO:Create a function that return train data"""
+
+def prepare_test_data():
+    """TODO:Create a function that return test data"""
+
+def WAPE(answer, preds):
+    return (abs(answer - preds).sum(0) / answer.sum(0)).mean() * 100
+
+def RMSE(answer, preds):
+    return np.sqrt(((answer - preds)**2).mean())
+
+def MAE(answer, preds):
+    return (abs(answer - preds).mean())
+
+def split_sequence(sequence, n_steps):
+    X, y = list(), list()
+    for i in range(len(sequence)):
+        #find the end of this pattern
+        end_ix = i + n_steps
+        # check if we are biyond the sequence
+        if end_ix > len(sequence)-1:
+            break
+        # gather input and output parts of the pattern
+        seq_x, seq_y = sequence[i:end_ix], sequence[end_ix]
+        X.append(seq_x)
+        y.append(seq_y)
+    return array(X), array(y)
 
 def normalize_adj(adj, symmetric=True):
     if symmetric:
@@ -29,18 +49,15 @@ def normalize_adj_numpy(adj, symmetric=True):
         a_norm = d.dot(adj)
     return a_norm
 
-
 def preprocess_adj(adj, symmetric=True):
     adj = adj + sp.eye(adj.shape[0])
     adj = normalize_adj(adj, symmetric)
     return adj
 
-
 def preprocess_adj_numpy(adj, symmetric=True):
     adj = adj + np.eye(adj.shape[0])
     adj = normalize_adj_numpy(adj, symmetric)
     return adj
-
 
 def preprocess_adj_tensor(adj_tensor, symmetric=True):
     adj_out_tensor = []
